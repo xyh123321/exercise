@@ -10,7 +10,7 @@ function statement(invoice, plays) {
 
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
-    let thisAmount = calcAmountOfType(play, 0, perf);
+    let thisAmount = calcAmountOfType(play, perf);
     // add volume credits
     volumeCredits += Math.max(perf.audience - 30, 0);
     // add extra credit for every ten comedy attendees
@@ -25,7 +25,8 @@ function statement(invoice, plays) {
 
 }
 
-function calcAmountOfType(play, thisAmount, perf) {
+function calcAmountOfType(play,perf) {
+  let thisAmount = 0;
   switch (play.type) {
     case 'tragedy':
       thisAmount = 40000;
