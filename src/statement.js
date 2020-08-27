@@ -42,9 +42,10 @@ function createStatementHtml(invoice, plays) {
   for (let perf of data.performances) {
     result += ` <tr><td>${perf.name}</td><td>${perf.audience}</td><td>${perf.thisAmount}</td></tr>\n`;
   }
-  result += '<table>\n';
+  result += '</table>\n';
   result += `<p>Amount owed is <em>${data.totalAmount}</em></p>\n`;
   result += `<p>You earned <em>${data.totalVolumeCredits}</em> credits</p>\n`;
+  return result;
 }
 
 function formatUSD(amount) {
