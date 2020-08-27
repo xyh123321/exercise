@@ -8,7 +8,6 @@ function generateStatement(invoice, plays) {
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     let thisAmount = calcAmountOfType(play, perf);
-    //print line for this order
     result += ` ${play.name}: ${formatUSD(thisAmount)} (${perf.audience} seats)\n`;
     totalAmount += thisAmount;
   }
@@ -30,7 +29,6 @@ function calcVolumeCredits(invoice, plays) {
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     volumeCredits += Math.max(perf.audience - 30, 0);
-    // add extra credit for every ten comedy attendees
     if ('comedy' === play.type){
       volumeCredits += Math.floor(perf.audience / 5);
     }
