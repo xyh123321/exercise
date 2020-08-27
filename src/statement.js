@@ -1,5 +1,9 @@
 function statement(invoice, plays) {
-  return generateStatemenData(invoice, plays);
+  return createStatementText(invoice, plays);
+}
+
+function statementHtml(invoice, plays) {
+  return createStatementHtml(invoice, plays);
 }
 
 function generateStatemenData(invoice, plays) {
@@ -16,10 +20,11 @@ function generateStatemenData(invoice, plays) {
     totalAmount += thisAmount;
   }
   data.totalAmount = formatUSD(totalAmount);
-  return createStatementText(data);
+  return data;
 }
 
-function createStatementText(data) {
+function createStatementText(invoice, plays) {
+  let data = generateStatemenData(invoice, plays);
   let result = `Statement for ${data.customer}\n`;
   for (let perf of data.performances) {
     result += ` ${perf.name}: ${perf.thisAmount} (${perf.audience} seats)\n`;
@@ -27,6 +32,19 @@ function createStatementText(data) {
   result += `Amount owed is ${data.totalAmount}\n`;
   result += `You earned ${data.totalVolumeCredits} credits \n`;
   return result;
+}
+
+function createStatementHtml(invoice, plays) {
+  let data = generateStatemenData(invoice, plays);
+  let result = `<h1>Statement for ${data.customer}</h1>\n`;
+  result += '<table>\n';
+  result += '<tr><th>play</th><th>seats</th><th>cost</th></tr>';
+  for (let perf of data.performances) {
+    result += ` <tr><td>${perf.name}</td><td>${perf.audience}</td><td>${perf.thisAmount}</td></tr>\n`;
+  }
+  result += '<table>\n';
+  result += `<p>Amount owed is <em>${data.totalAmount}</em></p>\n`;
+  result += `<p>You earned <em>${data.totalVolumeCredits}</em> credits</p>\n`;
 }
 
 function formatUSD(amount) {
@@ -74,4 +92,5 @@ function calcAmountOfType(play,perf) {
 
 module.exports = {
   statement,
+  statementHtml
 };
