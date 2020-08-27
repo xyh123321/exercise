@@ -1,18 +1,31 @@
 function statement(invoice, plays) {
-  return generateStatement(invoice, plays);
+  return generateStatemenData(invoice, plays);
 }
 
-function generateStatement(invoice, plays) {
+function generateStatemenData(invoice, plays) {
   let totalAmount = 0;
-  let result = `Statement for ${invoice.customer}\n`;
-  for (let perf of invoice.performances) {
+  let data = {};
+  data.customer = invoice.customer;
+  data.performances = invoice.performances;
+  data.totalVolumeCredits = calcVolumeCredits(invoice,plays);
+  for (let perf of data.performances) {
     const play = plays[perf.playID];
     let thisAmount = calcAmountOfType(play, perf);
-    result += ` ${play.name}: ${formatUSD(thisAmount)} (${perf.audience} seats)\n`;
+    perf.name = play.name;
+    perf.thisAmount = formatUSD(thisAmount);
     totalAmount += thisAmount;
   }
-  result += `Amount owed is ${formatUSD(totalAmount)}\n`;
-  result += `You earned ${calcVolumeCredits(invoice,plays)} credits \n`;
+  data.totalAmount = formatUSD(totalAmount);
+  return createStatementText(data);
+}
+
+function createStatementText(data) {
+  let result = `Statement for ${data.customer}\n`;
+  for (let perf of data.performances) {
+    result += ` ${perf.name}: ${perf.thisAmount} (${perf.audience} seats)\n`;
+  }
+  result += `Amount owed is ${data.totalAmount}\n`;
+  result += `You earned ${data.totalVolumeCredits} credits \n`;
   return result;
 }
 
