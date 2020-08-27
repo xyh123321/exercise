@@ -4,18 +4,16 @@ function statement(invoice, plays) {
 
 function generateStatement(invoice, plays) {
   let totalAmount = 0;
-  let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     let thisAmount = calcAmountOfType(play, perf);
-    volumeCredits = addVolumeCredits(volumeCredits, perf, play);
     //print line for this order
     result += ` ${play.name}: ${formatUSD(thisAmount)} (${perf.audience} seats)\n`;
     totalAmount += thisAmount;
   }
   result += `Amount owed is ${formatUSD(totalAmount)}\n`;
-  result += `You earned ${volumeCredits} credits \n`;
+  result += `You earned ${calcVolumeCredits(invoice,plays)} credits \n`;
   return result;
 }
 
@@ -27,12 +25,17 @@ function formatUSD(amount) {
   }).format(amount);
 }
 
-function addVolumeCredits(volumeCredits, perf, play) {
-  volumeCredits += Math.max(perf.audience - 30, 0);
-  // add extra credit for every ten comedy attendees
-  if ('comedy' === play.type){
-    volumeCredits += Math.floor(perf.audience / 5);
+function calcVolumeCredits(invoice, plays) {
+  let volumeCredits = 0;
+  for (let perf of invoice.performances) {
+    const play = plays[perf.playID];
+    volumeCredits += Math.max(perf.audience - 30, 0);
+    // add extra credit for every ten comedy attendees
+    if ('comedy' === play.type){
+      volumeCredits += Math.floor(perf.audience / 5);
+    }
   }
+  
   return volumeCredits;
 }
 
