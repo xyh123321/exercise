@@ -9,6 +9,7 @@ function statementHtml(invoice, plays) {
 function generateStatemenData(invoice, plays) {
   let totalAmount = 0;
   let data = {};
+
   data.customer = invoice.customer;
   data.performances = invoice.performances;
   data.totalVolumeCredits = calcVolumeCredits(invoice,plays);
